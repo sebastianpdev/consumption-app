@@ -7,6 +7,7 @@ import com.jspapps.consumptionapp.infrastructure.persistence.ConsumptionReposito
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,8 @@ public class ListConsumptionDAO implements IListConsumptionPort {
     private final ConsumptionRepository consumptionRepository;
 
     @Override
-    public List<ConsumptionDTO> listConsumptionRecords(List<Integer> metersId, String startDate, String endDate) {
-        return consumptionRepository.findAllByMeter(1).stream().map(c -> modelMapper.map(c, ConsumptionDTO.class)).collect(Collectors.toList());
+    public List<ConsumptionDTO> listConsumptionRecords(List<Integer> metersId, Instant startDate, Instant endDate) {
+        return consumptionRepository.findAllByMeterIdsAndDateRange(metersId, startDate, endDate).stream().map(c ->
+                modelMapper.map(c, ConsumptionDTO.class)).collect(Collectors.toList());
     }
 }

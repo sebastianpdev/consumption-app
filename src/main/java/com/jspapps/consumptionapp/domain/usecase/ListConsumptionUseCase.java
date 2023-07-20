@@ -1,8 +1,10 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
+import com.jspapps.consumptionapp.application.util.DateUtils;
 import com.jspapps.consumptionapp.application.util.annotation.UseCase;
 import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
 import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
+import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
 import com.jspapps.consumptionapp.domain.port.in.IListConsumptionUseCase;
 import com.jspapps.consumptionapp.domain.port.out.IListConsumptionPort;
 import lombok.AllArgsConstructor;
@@ -17,31 +19,51 @@ public class ListConsumptionUseCase implements IListConsumptionUseCase {
     private final IListConsumptionPort listConsumptionPort;
 
     @Override
-    public void listConsumptionRecords(List<Integer> metersId, String startDate, String endDate, KindPeriod kindPeriod) {
+    public DataGraphDTO listConsumptionRecords(List<Integer> metersId, String startDate, String endDate, KindPeriod kindPeriod) {
+        try {
+            var mStartDate = DateUtils.convertStringToInstant(startDate);
+            var mEndDate = DateUtils.convertStringToInstant(endDate);
 
-        var consumptionList = listConsumptionPort.listConsumptionRecords(metersId, startDate, endDate);
-        var dates = consumptionList.stream().map(ConsumptionDTO::getDate).collect(Collectors.toList());
+            var consumptionList = listConsumptionPort.listConsumptionRecords(metersId, mStartDate, mEndDate);
+            if (!consumptionList.isEmpty()) {
+                DataGraphContext dataGraphContext = new DataGraphContext();
+                dataGraphContext.buildDataGraph(consumptionList);
+                dataGraphContext.processDataGraph();
 
-        KindPeriodHandle.KindPeriodContext periodContext = new KindPeriodHandle.KindPeriodContext();
+                DataGraphDTO dataGraphDTO = new DataGraphDTO();
+                dataGraphDTO.setData_graph(dataGraphContext.getDataGraphList());
 
-        switch (kindPeriod) {
-            case monthly:
-                periodContext.setPeriodFormatter(new KindPeriodHandle.PeriodMonthlyFormat());
-                periodContext.prepareDates(dates);
-                periodContext.buildPeriodSection();
-                break;
+                var dates = consumptionList.stream().map(ConsumptionDTO::getDate).collect(Collectors.toList());
 
-            case weekly:
-                periodContext.setPeriodFormatter(new KindPeriodHandle.PeriodWeeklyFormat());
-                periodContext.prepareDates(dates);
-                periodContext.buildPeriodSection();
-                break;
+                KindPeriodHandle.KindPeriodContext periodContext = new KindPeriodHandle.KindPeriodContext();
 
-            case daily:
-                periodContext.setPeriodFormatter(new KindPeriodHandle.PeriodDailyFormat());
-                periodContext.prepareDates(dates);
-                periodContext.buildPeriodSection();
-                break;
+                switch (kindPeriod) {
+                    case monthly:
+                        periodContext.setPeriodFormatter(new KindPeriodHandle.PeriodMonthlyFormat());
+                        periodContext.prepareDates(dates);
+                        dataGraphDTO.setPeriod(periodContext.buildPeriodSection());
+                        break;
+
+                    case weekly:
+                        periodContext.setPeriodFormatter(new KindPeriodHandle.PeriodWeeklyFormat());
+                        periodContext.prepareDates(dates);
+                        dataGraphDTO.setPeriod(periodContext.buildPeriodSection());
+                        break;
+
+                    case daily:
+                        periodContext.setPeriodFormatter(new KindPeriodHandle.PeriodDailyFormat());
+                        periodContext.prepareDates(dates);
+                        dataGraphDTO.setPeriod(periodContext.buildPeriodSection());
+                        break;
+                }
+
+                return dataGraphDTO;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return null;
     }
 }
