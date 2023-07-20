@@ -1,7 +1,7 @@
 package com.jspapps.consumptionapp.infrastructure.persistence.dao;
 
 import com.jspapps.consumptionapp.application.util.annotation.PersistenceAdapter;
-import com.jspapps.consumptionapp.domain.dto.SaveConsumption;
+import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
 import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionUseCase;
 import com.jspapps.consumptionapp.infrastructure.persistence.ConsumptionRepository;
 import com.jspapps.consumptionapp.infrastructure.persistence.model.Consumption;
@@ -23,7 +23,7 @@ public class CreateConsumptionDAO implements ICreateConsumptionUseCase {
     private final ConsumptionRepository consumptionRepository;
 
     @Override
-    public void saveConsumption(List<SaveConsumption> consumptionList) {
+    public void saveConsumption(List<ConsumptionDTO> consumptionList) {
         logger.log(Level.INFO, "Trying to create consumption records ...");
         List<Consumption> newConsumption = consumptionList.stream().map(c -> modelMapper.map(c, Consumption.class)).collect(Collectors.toList());
         consumptionRepository.saveAll(newConsumption);

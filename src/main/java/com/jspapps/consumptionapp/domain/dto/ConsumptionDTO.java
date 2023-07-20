@@ -10,7 +10,7 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveConsumption {
+public class ConsumptionDTO {
 
     private String id;
 
