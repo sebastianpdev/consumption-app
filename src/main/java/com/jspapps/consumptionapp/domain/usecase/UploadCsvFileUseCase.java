@@ -11,11 +11,10 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -39,9 +38,10 @@ public class UploadCsvFileUseCase {
         this.createConsumptionUseCase = createConsumptionUseCase;
     }
 
-    public void processFile(File file) {
+    public void processFile(Resource file) {
         try {
-            CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(new FileReader(file));
+            CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader()
+                    .parse(new BufferedReader(new InputStreamReader(file.getInputStream())));
             List<CSVRecord> records = csvParser.getRecords();
 
             int batchSize = (int) Math.ceil((double) records.size() / AppConfig.THREADS);
