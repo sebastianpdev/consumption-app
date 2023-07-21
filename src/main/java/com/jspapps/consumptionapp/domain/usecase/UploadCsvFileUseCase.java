@@ -2,16 +2,18 @@ package com.jspapps.consumptionapp.domain.usecase;
 
 import com.google.common.collect.Lists;
 import com.jspapps.consumptionapp.application.config.AppConfig;
+import com.jspapps.consumptionapp.application.exception.CustomRuntimeException;
 import com.jspapps.consumptionapp.application.util.annotation.UseCase;
 import com.jspapps.consumptionapp.application.util.constant.AppConstant;
 import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionUseCase;
+import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionDAO;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -24,50 +26,55 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import static com.jspapps.consumptionapp.application.util.constant.AppConstant.CSV_DATE_FORMAT;
+
 @UseCase
 public class UploadCsvFileUseCase {
 
     private final ThreadPoolTaskExecutor taskExecutor;
-    private final ICreateConsumptionUseCase createConsumptionUseCase;
+    private final ICreateConsumptionDAO createConsumptionUseCase;
 
-    public static final String CSV_DATE_FORMAT = "yyyy-MM-dd HH:mm:ssX";
-
-    public UploadCsvFileUseCase(@Qualifier("taskExecutor") ThreadPoolTaskExecutor taskExecutor, ICreateConsumptionUseCase createConsumptionUseCase) {
+    public UploadCsvFileUseCase(@Qualifier("taskExecutor") ThreadPoolTaskExecutor taskExecutor, ICreateConsumptionDAO createConsumptionUseCase) {
         this.taskExecutor = taskExecutor;
         this.createConsumptionUseCase = createConsumptionUseCase;
     }
 
-    public void processFile(String filePath) throws IOException, ExecutionException, InterruptedException {
-        CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(new FileReader(filePath));
-        List<CSVRecord> records = csvParser.getRecords();
+    public void processFile(File file) {
+        try {
+            CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(new FileReader(file));
+            List<CSVRecord> records = csvParser.getRecords();
 
-        int batchSize = (int) Math.ceil((double) records.size() / AppConfig.THREADS);
+            int batchSize = (int) Math.ceil((double) records.size() / AppConfig.THREADS);
 
-        List<Future<List<ConsumptionDTO>>> tasks = new ArrayList<>();
+            List<Future<List<ConsumptionDTO>>> tasks = new ArrayList<>();
 
-        for (int i = 0; i < AppConfig.THREADS; i++) {
-            int fromIndex = i * batchSize;
-            int toIndex = Math.min((i+1) * batchSize, records.size());
+            for (int i = 0; i < AppConfig.THREADS; i++) {
+                int fromIndex = i * batchSize;
+                int toIndex = Math.min((i+1) * batchSize, records.size());
 
-            List<CSVRecord> batch = records.subList(fromIndex, toIndex);
+                List<CSVRecord> batch = records.subList(fromIndex, toIndex);
 
-            ProcessConsumptionRecord consumptionRecord = new ProcessConsumptionRecord(batch);
+                ProcessConsumptionRecord consumptionRecord = new ProcessConsumptionRecord(batch);
 
-            Future<List<ConsumptionDTO>> task = taskExecutor.submit(consumptionRecord);
-            tasks.add(task);
+                Future<List<ConsumptionDTO>> task = taskExecutor.submit(consumptionRecord);
+                tasks.add(task);
+            }
+
+            List<ConsumptionDTO> consumptionList = new ArrayList<>();
+            for (Future<List<ConsumptionDTO>> task: tasks) {
+                List<ConsumptionDTO> recordConsumptionDone = task.get();
+                consumptionList.addAll(recordConsumptionDone);
+            }
+
+            csvParser.close();
+
+            saveConsumptionRecord(consumptionList);
+
+            taskExecutor.shutdown();
+
+        } catch (IOException | ExecutionException | InterruptedException ex) {
+            throw new CustomRuntimeException(AppConstant.ERROR_UPLOAD_CSV_FILE_, AppConstant.ERROR_UPLOAD_CSV_FILE, ex);
         }
-
-        List<ConsumptionDTO> consumptionList = new ArrayList<>();
-        for (Future<List<ConsumptionDTO>> task: tasks) {
-            List<ConsumptionDTO> recordConsumptionDone = task.get();
-            consumptionList.addAll(recordConsumptionDone);
-        }
-
-        csvParser.close();
-
-        saveConsumptionRecord(consumptionList);
-
-        taskExecutor.shutdown();
     }
 
     private void saveConsumptionRecord(List<ConsumptionDTO> consumptionList) {
@@ -76,7 +83,7 @@ public class UploadCsvFileUseCase {
         }
     }
 
-    private static class ProcessConsumptionRecord implements Callable<List<ConsumptionDTO>> {
+    public static class ProcessConsumptionRecord implements Callable<List<ConsumptionDTO>> {
         private List<CSVRecord> energyRecords;
 
         public ProcessConsumptionRecord(List<CSVRecord> batch) {

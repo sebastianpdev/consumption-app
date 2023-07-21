@@ -2,7 +2,7 @@ package com.jspapps.consumptionapp.infrastructure.persistence.dao;
 
 import com.jspapps.consumptionapp.application.util.annotation.PersistenceAdapter;
 import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionUseCase;
+import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionDAO;
 import com.jspapps.consumptionapp.infrastructure.persistence.ConsumptionRepository;
 import com.jspapps.consumptionapp.infrastructure.persistence.model.Consumption;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @PersistenceAdapter
-public class CreateConsumptionDAO implements ICreateConsumptionUseCase {
+public class CreateConsumptionDAO implements ICreateConsumptionDAO {
 
     private final Logger logger = Logger.getLogger(CreateConsumptionDAO.class.getName());
     private final ModelMapper modelMapper;
