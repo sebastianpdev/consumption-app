@@ -1,5 +1,6 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
+import com.jspapps.consumptionapp.application.util.StringUtils;
 import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
 import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
 
@@ -23,6 +24,7 @@ public class DataGraphContext {
 
             DataGraphDTO.DataGraph dataGraph = new DataGraphDTO.DataGraph();
             dataGraph.setMeter_id(meter);
+            dataGraph.setAddress("Street ".concat(StringUtils.generateStreetRandom()));
             addActive(dataGraph, consumptionList);
             addReactiveEnergy(dataGraph, consumptionList);
             addCapacitiveReactive(dataGraph, consumptionList);

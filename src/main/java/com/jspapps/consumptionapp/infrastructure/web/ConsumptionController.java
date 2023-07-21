@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 public class ConsumptionController {
 
-    private static final String PARAM_METER = "meters_is";
+    private static final String PARAM_METER = "meters_ids";
     private static final String PARAM_START_DATE = "start_date";
     private static final String PARAM_END_DATE = "end_date";
     private static final String PARAM_PERIOD = "kind_period";

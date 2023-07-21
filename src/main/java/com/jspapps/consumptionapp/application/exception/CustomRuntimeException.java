@@ -24,9 +24,10 @@ public class CustomRuntimeException extends RuntimeException {
         this.messageKey = messageKey;
     }
 
-    public CustomRuntimeException(String message, Exception exception) {
+    public CustomRuntimeException(String message, String messageKey, Exception exception) {
         super(message);
         this.message = message;
+        this.messageKey = messageKey;
         this.exception = exception;
     }
 

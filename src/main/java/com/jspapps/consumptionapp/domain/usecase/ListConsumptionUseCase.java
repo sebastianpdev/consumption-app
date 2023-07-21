@@ -6,7 +6,7 @@ import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
 import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
 import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
 import com.jspapps.consumptionapp.domain.port.in.IListConsumptionUseCase;
-import com.jspapps.consumptionapp.domain.port.out.IListConsumptionPort;
+import com.jspapps.consumptionapp.domain.port.out.IListConsumptionDAO;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @UseCase
 public class ListConsumptionUseCase implements IListConsumptionUseCase {
 
-    private final IListConsumptionPort listConsumptionPort;
+    private final IListConsumptionDAO listConsumptionDAO;
 
     @Override
     public DataGraphDTO listConsumptionRecords(List<Integer> metersId, String startDate, String endDate, KindPeriod kindPeriod) {
@@ -24,7 +24,7 @@ public class ListConsumptionUseCase implements IListConsumptionUseCase {
             var mStartDate = DateUtils.convertStringToInstant(startDate);
             var mEndDate = DateUtils.convertStringToInstant(endDate);
 
-            var consumptionList = listConsumptionPort.listConsumptionRecords(metersId, mStartDate, mEndDate);
+            var consumptionList = listConsumptionDAO.listConsumptionRecords(metersId, mStartDate, mEndDate);
             if (!consumptionList.isEmpty()) {
                 DataGraphContext dataGraphContext = new DataGraphContext();
                 dataGraphContext.buildDataGraph(consumptionList);

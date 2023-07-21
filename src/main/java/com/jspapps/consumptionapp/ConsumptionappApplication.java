@@ -26,7 +26,7 @@ public class ConsumptionappApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		var csvFile = new ClassPathResource(AppConstant.CSV_FILE_PATH).getFile().getPath();
+		var csvFile = new ClassPathResource(AppConstant.CSV_FILE_PATH).getFile();
 		uploadCsvFileUseCase.processFile(csvFile);
 	}
 }
