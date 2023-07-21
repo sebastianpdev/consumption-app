@@ -1,7 +1,9 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
+import com.jspapps.consumptionapp.application.exception.CustomRuntimeException;
 import com.jspapps.consumptionapp.application.util.DateUtils;
 import com.jspapps.consumptionapp.application.util.annotation.UseCase;
+import com.jspapps.consumptionapp.application.util.constant.AppConstant;
 import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
 import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
 import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
@@ -61,7 +63,7 @@ public class ListConsumptionUseCase implements IListConsumptionUseCase {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomRuntimeException(AppConstant.ERROR_LIST_CONSUMPTION_RECORDS_, AppConstant.ERROR_LIST_CONSUMPTION_RECORDS, e);
         }
 
         return null;

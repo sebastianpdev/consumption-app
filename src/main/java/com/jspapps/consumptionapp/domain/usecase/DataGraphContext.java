@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Clase encargada de controlar la informacion por medidor y prepararla para la respuesta del endpoint.
+ */
 public class DataGraphContext {
 
     private final List<DataGraphDTO.DataGraph> dataGraphList = new ArrayList<>();
@@ -18,6 +21,9 @@ public class DataGraphContext {
         this.records = records;
     }
 
+    /**
+     * Gestiona la informacion por cada medidor
+     */
     public void processDataGraph() {
         Map<Integer, List<ConsumptionDTO>> groupByMeter = records.stream().collect(Collectors.groupingBy(ConsumptionDTO::getMeter));
         groupByMeter.forEach((meter, consumptionList) -> {

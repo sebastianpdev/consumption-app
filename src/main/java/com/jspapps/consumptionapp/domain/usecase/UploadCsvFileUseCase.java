@@ -48,6 +48,7 @@ public class UploadCsvFileUseCase {
 
             List<Future<List<ConsumptionDTO>>> tasks = new ArrayList<>();
 
+            // Apoyado del numero de hilos disponibles se calcula la cantidad de registros por lote
             for (int i = 0; i < AppConfig.THREADS; i++) {
                 int fromIndex = i * batchSize;
                 int toIndex = Math.min((i+1) * batchSize, records.size());
@@ -56,10 +57,14 @@ public class UploadCsvFileUseCase {
 
                 ProcessConsumptionRecord consumptionRecord = new ProcessConsumptionRecord(batch);
 
+                // Se ejecuta en paralelo un lote de registros
                 Future<List<ConsumptionDTO>> task = taskExecutor.submit(consumptionRecord);
+
+                // Acumulamos las tareas que envian a procesar
                 tasks.add(task);
             }
 
+            // Se acumulan los registros procesado del csv por cada task ejecutada
             List<ConsumptionDTO> consumptionList = new ArrayList<>();
             for (Future<List<ConsumptionDTO>> task: tasks) {
                 List<ConsumptionDTO> recordConsumptionDone = task.get();
@@ -77,12 +82,20 @@ public class UploadCsvFileUseCase {
         }
     }
 
+    /**
+     * Guarda por partes la lista de registros procesados del csv
+     * @param consumptionList lista de registros procesados del csv
+     */
     private void saveConsumptionRecord(List<ConsumptionDTO> consumptionList) {
         for (List<ConsumptionDTO> mConsumption: Lists.partition(consumptionList, AppConstant.BATCH_SAVING_RECORDS)) {
             createConsumptionUseCase.saveConsumption(mConsumption);
         }
     }
 
+    /**
+     * Clase encargada de procesar un lote de registros del archivo csv y genera una lista de DTO's
+     * necesarios para guardar en la base de datos.
+     */
     public static class ProcessConsumptionRecord implements Callable<List<ConsumptionDTO>> {
         private List<CSVRecord> energyRecords;
 

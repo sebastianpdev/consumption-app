@@ -56,7 +56,9 @@ public class DataGraphDTO {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             DataGraph dataGraph = (DataGraph) o;
-            return meter_id == dataGraph.meter_id && Objects.equals(address, dataGraph.address) && Objects.equals(active, dataGraph.active) && Objects.equals(reactive_inductive, dataGraph.reactive_inductive) && Objects.equals(reactive_capacitive, dataGraph.reactive_capacitive) && Objects.equals(solar, dataGraph.solar);
+            return meter_id == dataGraph.meter_id && Objects.equals(address, dataGraph.address) && Objects.equals(active, dataGraph.active)
+                    && Objects.equals(reactive_inductive, dataGraph.reactive_inductive) && Objects.equals(reactive_capacitive, dataGraph.reactive_capacitive)
+                    && Objects.equals(solar, dataGraph.solar);
         }
 
         @Override

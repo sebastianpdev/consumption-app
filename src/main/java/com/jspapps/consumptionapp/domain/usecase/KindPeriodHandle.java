@@ -15,6 +15,9 @@ public class KindPeriodHandle {
         List<String> buildPeriodFormat(List<LocalDate> dates);
     }
 
+    /**
+     * Clase para aplicar a las fechas el formato mensual
+     */
     public static class PeriodMonthlyFormat implements PeriodFormatter {
 
         private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMM yyyy");
@@ -31,6 +34,9 @@ public class KindPeriodHandle {
         }
     }
 
+    /**
+     * Clase para aplicar a las fechas el formato semanal
+     */
     public static class PeriodWeeklyFormat implements PeriodFormatter {
 
         private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMM d");
@@ -58,6 +64,9 @@ public class KindPeriodHandle {
         }
     }
 
+    /**
+     * Clase para aplicar a las fechas el formato diario
+     */
     public static class PeriodDailyFormat implements PeriodFormatter {
 
         private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMM d");
@@ -74,6 +83,9 @@ public class KindPeriodHandle {
         }
     }
 
+    /**
+     * Clase encargada de controlar el formato segun el periodo solicitdao, usando el patron strategy
+     */
     public static class KindPeriodContext {
         private PeriodFormatter periodFormatter;
         private List<LocalDate> dates;

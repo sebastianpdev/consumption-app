@@ -12,5 +12,7 @@ public class AppConstant {
     // Error message
     public static final String ERROR_UPLOAD_CSV_FILE_ = "Error durante el procesamiento del archivo csv.";
     public static final String ERROR_UPLOAD_CSV_FILE = "ERROR_UPLOAD_CSV_FILE";
+    public static final String ERROR_LIST_CONSUMPTION_RECORDS_ = "Error durante busqueda de consumos.";
+    public static final String ERROR_LIST_CONSUMPTION_RECORDS = "ERROR_LIST_CONSUMPTION_RECORDS";
 
 }

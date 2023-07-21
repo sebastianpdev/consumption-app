@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Creamos una clase personalizada para errores en ejecucion y asi centralizar, con enfoque para usarse en observabilidad
+ * o logging con AOP si es necesario.
+ */
 @Getter
 @Setter
 public class CustomRuntimeException extends RuntimeException {

@@ -45,7 +45,8 @@ public class ConsumptionDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ConsumptionDTO that = (ConsumptionDTO) o;
-        return meter == that.meter && Objects.equals(id, that.id) && Objects.equals(activeEnergy, that.activeEnergy) && Objects.equals(reactiveEnergy, that.reactiveEnergy) && Objects.equals(capacitiveReactive, that.capacitiveReactive) && Objects.equals(solar, that.solar) && Objects.equals(date, that.date);
+        return meter == that.meter && Objects.equals(id, that.id) && Objects.equals(activeEnergy, that.activeEnergy) && Objects.equals(reactiveEnergy, that.reactiveEnergy)
+                && Objects.equals(capacitiveReactive, that.capacitiveReactive) && Objects.equals(solar, that.solar) && Objects.equals(date, that.date);
     }
 
     @Override
