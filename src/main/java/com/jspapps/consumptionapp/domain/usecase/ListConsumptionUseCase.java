@@ -1,14 +1,14 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
-import com.jspapps.consumptionapp.application.exception.CustomRuntimeException;
-import com.jspapps.consumptionapp.application.util.DateUtils;
-import com.jspapps.consumptionapp.application.util.annotation.UseCase;
-import com.jspapps.consumptionapp.application.util.constant.AppConstant;
-import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
-import com.jspapps.consumptionapp.domain.port.in.IListConsumptionUseCase;
-import com.jspapps.consumptionapp.domain.port.out.IListConsumptionDAO;
+import com.jspapps.consumptionapp.application.port.out.ConsumptionOutputPort;
+import com.jspapps.consumptionapp.infrastructure.exception.CustomRuntimeException;
+import com.jspapps.consumptionapp.infrastructure.util.DateUtils;
+import com.jspapps.consumptionapp.infrastructure.util.annotation.UseCase;
+import com.jspapps.consumptionapp.infrastructure.util.constant.AppConstant;
+import com.jspapps.consumptionapp.infrastructure.util.constant.KindPeriod;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
+import com.jspapps.consumptionapp.domain.model.DataGraphDTO;
+import com.jspapps.consumptionapp.application.port.in.IListConsumptionUseCase;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @UseCase
 public class ListConsumptionUseCase implements IListConsumptionUseCase {
 
-    private final IListConsumptionDAO listConsumptionDAO;
+    private final ConsumptionOutputPort consumptionOutputPort;
 
     @Override
     public DataGraphDTO listConsumptionRecords(List<Integer> metersId, String startDate, String endDate, KindPeriod kindPeriod) {
@@ -26,7 +26,7 @@ public class ListConsumptionUseCase implements IListConsumptionUseCase {
             var mStartDate = DateUtils.convertStringToInstant(startDate);
             var mEndDate = DateUtils.convertStringToInstant(endDate);
 
-            var consumptionList = listConsumptionDAO.listConsumptionRecords(metersId, mStartDate, mEndDate);
+            var consumptionList = consumptionOutputPort.listConsumptionRecords(metersId, mStartDate, mEndDate);
             if (!consumptionList.isEmpty()) {
                 DataGraphContext dataGraphContext = new DataGraphContext();
                 dataGraphContext.buildDataGraph(consumptionList);

@@ -1,8 +1,8 @@
 package com.jspapps.consumptionapp.infrastructure.persistence.dao;
 
-import com.jspapps.consumptionapp.application.util.DateUtils;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.infrastructure.persistence.ConsumptionRepository;
+import com.jspapps.consumptionapp.infrastructure.util.DateUtils;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
+import com.jspapps.consumptionapp.infrastructure.persistence.repository.ConsumptionRepository;
 import com.jspapps.consumptionapp.infrastructure.persistence.model.Consumption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

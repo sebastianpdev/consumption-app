@@ -1,6 +1,6 @@
 package com.jspapps.consumptionapp;
 
-import com.jspapps.consumptionapp.application.util.constant.AppConstant;
+import com.jspapps.consumptionapp.infrastructure.util.constant.AppConstant;
 import com.jspapps.consumptionapp.domain.usecase.UploadCsvFileUseCase;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

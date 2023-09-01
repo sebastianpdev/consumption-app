@@ -1,7 +1,7 @@
 package com.jspapps.consumptionapp.infrastructure.web;
 
-import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
-import com.jspapps.consumptionapp.domain.port.in.IListConsumptionUseCase;
+import com.jspapps.consumptionapp.domain.service.ConsumptionService;
+import com.jspapps.consumptionapp.infrastructure.util.constant.KindPeriod;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +22,13 @@ public class ConsumptionController {
     private static final String URL_BASE_CONSUMPTION = "/consumption";
 
 
-    private final IListConsumptionUseCase listConsumptionUseCase;
+    private final ConsumptionService consumptionService;
 
     @GetMapping(value = URL_BASE_CONSUMPTION, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listConsumptionRecords(@RequestParam(PARAM_METER) List<Integer> metersId, @RequestParam(PARAM_START_DATE) String startDate,
                                                          @RequestParam(PARAM_END_DATE) String endDate, @RequestParam(PARAM_PERIOD) KindPeriod kindPeriod) {
 
-        var dataGraph = listConsumptionUseCase.listConsumptionRecords(metersId, startDate, endDate, kindPeriod);
+        var dataGraph = consumptionService.listConsumptionRecords(metersId, startDate, endDate, kindPeriod);
         return ResponseEntity.accepted().body(dataGraph);
     }
 }

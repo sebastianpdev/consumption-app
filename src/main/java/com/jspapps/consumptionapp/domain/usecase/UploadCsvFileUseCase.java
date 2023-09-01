@@ -1,12 +1,12 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
 import com.google.common.collect.Lists;
-import com.jspapps.consumptionapp.application.config.AppConfig;
-import com.jspapps.consumptionapp.application.exception.CustomRuntimeException;
-import com.jspapps.consumptionapp.application.util.annotation.UseCase;
-import com.jspapps.consumptionapp.application.util.constant.AppConstant;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionDAO;
+import com.jspapps.consumptionapp.application.port.out.ConsumptionOutputPort;
+import com.jspapps.consumptionapp.infrastructure.config.AppConfig;
+import com.jspapps.consumptionapp.infrastructure.exception.CustomRuntimeException;
+import com.jspapps.consumptionapp.infrastructure.util.annotation.UseCase;
+import com.jspapps.consumptionapp.infrastructure.util.constant.AppConstant;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -25,17 +25,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.jspapps.consumptionapp.application.util.constant.AppConstant.CSV_DATE_FORMAT;
+import static com.jspapps.consumptionapp.infrastructure.util.constant.AppConstant.CSV_DATE_FORMAT;
 
 @UseCase
 public class UploadCsvFileUseCase {
 
     private final ThreadPoolTaskExecutor taskExecutor;
-    private final ICreateConsumptionDAO createConsumptionUseCase;
+    private final ConsumptionOutputPort consumptionOutputPort;
 
-    public UploadCsvFileUseCase(@Qualifier("taskExecutor") ThreadPoolTaskExecutor taskExecutor, ICreateConsumptionDAO createConsumptionUseCase) {
+    public UploadCsvFileUseCase(@Qualifier("taskExecutor") ThreadPoolTaskExecutor taskExecutor, ConsumptionOutputPort consumptionOutputPort) {
         this.taskExecutor = taskExecutor;
-        this.createConsumptionUseCase = createConsumptionUseCase;
+        this.consumptionOutputPort = consumptionOutputPort;
     }
 
     public void processFile(Resource file) {
@@ -88,7 +88,7 @@ public class UploadCsvFileUseCase {
      */
     private void saveConsumptionRecord(List<ConsumptionDTO> consumptionList) {
         for (List<ConsumptionDTO> mConsumption: Lists.partition(consumptionList, AppConstant.BATCH_SAVING_RECORDS)) {
-            createConsumptionUseCase.saveConsumption(mConsumption);
+            consumptionOutputPort.saveConsumption(mConsumption);
         }
     }
 

@@ -1,20 +1,17 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
-import com.jspapps.consumptionapp.application.config.AppConfigTextContextConfiguration;
-import com.jspapps.consumptionapp.application.util.DateUtils;
-import com.jspapps.consumptionapp.application.util.constant.AppConstant;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.port.out.ICreateConsumptionDAO;
+import com.jspapps.consumptionapp.application.port.out.ConsumptionOutputPort;
+import com.jspapps.consumptionapp.infrastructure.util.DateUtils;
+import com.jspapps.consumptionapp.infrastructure.util.constant.AppConstant;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -30,7 +27,7 @@ public class UploadCsvFileUseCaseTest {
 
     private UploadCsvFileUseCase uploadCsvFileUseCaseUnderTest;
 
-    @Mock private ICreateConsumptionDAO createConsumptionUseCase;
+    @Mock private ConsumptionOutputPort consumptionOutputPort;
 
     /*@Autowired
     @Qualifier("taskExecutor")*/
@@ -44,7 +41,7 @@ public class UploadCsvFileUseCaseTest {
 
     @BeforeEach
     public void init() {
-        uploadCsvFileUseCaseUnderTest = new UploadCsvFileUseCase(taskExecutor, createConsumptionUseCase);
+        uploadCsvFileUseCaseUnderTest = new UploadCsvFileUseCase(taskExecutor, consumptionOutputPort);
 
         consumptionDTO = ConsumptionDTO.builder()
                 .id(CONSUMPTION_ID_ONE).meter(1).activeEnergy(new BigDecimal("0.00")).reactiveEnergy(new BigDecimal("0.00"))

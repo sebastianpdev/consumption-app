@@ -1,8 +1,8 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
-import com.jspapps.consumptionapp.application.util.StringUtils;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
+import com.jspapps.consumptionapp.infrastructure.util.StringUtils;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
+import com.jspapps.consumptionapp.domain.model.DataGraphDTO;
 
 import java.util.ArrayList;
 import java.util.List;

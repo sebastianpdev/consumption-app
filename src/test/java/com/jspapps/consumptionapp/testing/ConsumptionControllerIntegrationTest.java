@@ -1,13 +1,13 @@
 package com.jspapps.consumptionapp.testing;
 
 import com.jspapps.consumptionapp.ConsumptionappApplication;
-import com.jspapps.consumptionapp.application.util.DateUtils;
-import com.jspapps.consumptionapp.application.util.StringUtils;
-import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
-import com.jspapps.consumptionapp.domain.port.in.IListConsumptionUseCase;
-import com.jspapps.consumptionapp.domain.port.out.IListConsumptionDAO;
+import com.jspapps.consumptionapp.application.port.out.ConsumptionOutputPort;
+import com.jspapps.consumptionapp.infrastructure.util.DateUtils;
+import com.jspapps.consumptionapp.infrastructure.util.StringUtils;
+import com.jspapps.consumptionapp.infrastructure.util.constant.KindPeriod;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
+import com.jspapps.consumptionapp.domain.model.DataGraphDTO;
+import com.jspapps.consumptionapp.application.port.in.IListConsumptionUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ public class ConsumptionControllerIntegrationTest {
 
     @MockBean private IListConsumptionUseCase listConsumptionUseCase;
 
-    @MockBean private IListConsumptionDAO listConsumptionDAO;
+    @MockBean private ConsumptionOutputPort consumptionOutputPort;
 
     // Variables necesarias para el test
     private List<Integer> meters;
@@ -73,7 +73,7 @@ public class ConsumptionControllerIntegrationTest {
         var mEndDate = convertStringToInstant(endDate);
 
         // simulamos la ejecucion en la capa de acceso a datos
-        given(listConsumptionDAO.listConsumptionRecords(meters, mStartDate, mEndDate)).willReturn(List.of(consumptionDTO));
+        given(consumptionOutputPort.listConsumptionRecords(meters, mStartDate, mEndDate)).willReturn(List.of(consumptionDTO));
 
         // simulamos la ejecucion en la capa de caso de uso
         given(listConsumptionUseCase.listConsumptionRecords(meters, startDate, endDate, KindPeriod.monthly)).willReturn(dataGraphDTO);
@@ -92,7 +92,7 @@ public class ConsumptionControllerIntegrationTest {
 
         // reestabler estado del objeto simulado
         reset(listConsumptionUseCase);
-        reset(listConsumptionDAO);
+        reset(consumptionOutputPort);
     }
 
     private Instant convertStringToInstant(String date) {

@@ -1,10 +1,10 @@
 package com.jspapps.consumptionapp.domain.usecase;
 
-import com.jspapps.consumptionapp.application.util.DateUtils;
-import com.jspapps.consumptionapp.application.util.constant.KindPeriod;
-import com.jspapps.consumptionapp.domain.dto.ConsumptionDTO;
-import com.jspapps.consumptionapp.domain.dto.DataGraphDTO;
-import com.jspapps.consumptionapp.domain.port.out.IListConsumptionDAO;
+import com.jspapps.consumptionapp.application.port.out.ConsumptionOutputPort;
+import com.jspapps.consumptionapp.infrastructure.util.DateUtils;
+import com.jspapps.consumptionapp.infrastructure.util.constant.KindPeriod;
+import com.jspapps.consumptionapp.domain.model.ConsumptionDTO;
+import com.jspapps.consumptionapp.domain.model.DataGraphDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class ListConsumptionUseCaseTest {
 
     private ListConsumptionUseCase listConsumptionUseCaseUnderTest;
 
-    @Mock private IListConsumptionDAO listConsumptionDAO;
+    @Mock private ConsumptionOutputPort consumptionOutputPort;
 
     // Variables necessary
     private List<Integer> meters;
@@ -38,7 +38,7 @@ public class ListConsumptionUseCaseTest {
 
     @BeforeEach
     public void init() {
-        listConsumptionUseCaseUnderTest = new ListConsumptionUseCase(listConsumptionDAO);
+        listConsumptionUseCaseUnderTest = new ListConsumptionUseCase(consumptionOutputPort);
 
         meters = List.of(1,2);
 
@@ -58,7 +58,7 @@ public class ListConsumptionUseCaseTest {
         Instant mStartDate = convertStringToInstant(startDate);
         Instant mEndDate = convertStringToInstant(endDate);
 
-        lenient().when(listConsumptionDAO.listConsumptionRecords(meters, mStartDate, mEndDate)).thenReturn(Collections.emptyList());
+        lenient().when(consumptionOutputPort.listConsumptionRecords(meters, mStartDate, mEndDate)).thenReturn(Collections.emptyList());
         DataGraphDTO result = listConsumptionUseCaseUnderTest.listConsumptionRecords(meters, startDate, endDate, KindPeriod.monthly);
         Assertions.assertNull(result);
     }
@@ -69,7 +69,7 @@ public class ListConsumptionUseCaseTest {
         Instant mEndDate = convertStringToInstant(endDate);
 
         List<ConsumptionDTO> consumptionList = consumptionDTOList();
-        when(listConsumptionDAO.listConsumptionRecords(meters, mStartDate, mEndDate)).thenReturn(consumptionList);
+        when(consumptionOutputPort.listConsumptionRecords(meters, mStartDate, mEndDate)).thenReturn(consumptionList);
         DataGraphDTO result = listConsumptionUseCaseUnderTest.listConsumptionRecords(meters, startDate, endDate, KindPeriod.monthly);
         Assertions.assertNotNull(result);
     }
@@ -80,7 +80,7 @@ public class ListConsumptionUseCaseTest {
         Instant mEndDate = convertStringToInstant(endDate);
 
         List<ConsumptionDTO> consumptionList = consumptionDTOList();
-        when(listConsumptionDAO.listConsumptionRecords(meters, mStartDate, mEndDate)).thenReturn(consumptionList);
+        when(consumptionOutputPort.listConsumptionRecords(meters, mStartDate, mEndDate)).thenReturn(consumptionList);
         DataGraphDTO result = listConsumptionUseCaseUnderTest.listConsumptionRecords(meters, startDate, endDate, KindPeriod.weekly);
         Assertions.assertNotNull(result);
     }
